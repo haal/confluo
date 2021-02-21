@@ -1,0 +1,47 @@
+Confluo playing
+
+Clone it and explore it
+
+Start it as deamon in docker container
+docker build -t confluo .
+docker run -it confluo /bin/bash
+docker run -p 9090:9090 confluo
+ADD .. /path/inside/docker/container
+- apt-get install git
+- cd opt && git clone https://github.com/ucbrise/confluo.git
+- apt-get install build-essential
+- apt-get install cmake
+- apt-get install libboost-all-dev
+- cd build && cmake -DWITH_PY_CLIENT=OFF -DWITH_JAVA_CLIENT=OFF ..
+- make
+- make install
+- /usr/local/bin/confluod
+libexecinfo
+- add java docs to confluo
+- java examples
+- Blog topic
+Dockerizing Confluo
+- First try with ubuntu
+- Unable to connect - server 0.0.0.0
+- Making it smaller
+-- alpine or multistage build
+
+alpine issues
+cmake -DBUILD_TESTS=OFF -DWITH_PY_CLIENT=OFF -DWITH_JAVA_CLIENT=OFF  ..
+- reverse_as in /opt/confluo/libconfluo/confluo/types/byte_string.h
+- missing utils:: on multiple places
+- missing backtrace/backtrace_symbols -> add package libunwind
+  - apk add --no-cache libunwind libunwind-dev
+  - apk add --no-cache libexecinfo
+  - /opt/confluo/libutils/src/utils/error_handling.cc - #include <libunwind.h>
+- https://github.com/neovim/neovim/commit/a7538371fec595641bed2d5e2d92e5ae2ce89b94
+
+
+ENTRYPOINT ["confluod"]
+CMD ["--address=0.0.0.0 --port=9090 -d /var/db"]
+
+How to build image
+docker build -f docker/Dockerfile.alpine -t confluo:alpine .
+
+How to run image
+docker run -p 9090:9090 -v mydata:/var/db confluo:alpine
